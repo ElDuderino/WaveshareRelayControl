@@ -6,6 +6,8 @@ if __name__ == "__main__":
     # ensure we can convert to channel int
     print(int(WaveshareDef.CH1.value))
 
+    print(WaveshareDef.from_channel_def(1))
+
     # initialize the WaveshareRelayController class
     relay_controller = WaveshareRelayController("COM49")
 

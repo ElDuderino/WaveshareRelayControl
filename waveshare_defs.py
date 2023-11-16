@@ -29,3 +29,24 @@ class WaveshareDef(IntEnum):
     CH8 = 14
     RGB = 13
     BUZZER = 6
+
+    @staticmethod
+    def from_channel_def(ch: int):
+        if ch == 1:
+            return WaveshareDef.CH1
+        elif ch == 2:
+            return WaveshareDef.CH2
+        elif ch == 3:
+            return WaveshareDef.CH3
+        elif ch == 4:
+            return WaveshareDef.CH4
+        elif ch == 5:
+            return WaveshareDef.CH5
+        elif ch == 6:
+            return WaveshareDef.CH6
+        elif ch == 7:
+            return WaveshareDef.CH7
+        elif ch == 8:
+            return WaveshareDef.CH8
+        else:
+            return None
