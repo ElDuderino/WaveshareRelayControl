@@ -2,7 +2,6 @@ from enum import IntEnum
 
 
 class WaveshareDef(IntEnum):
-
     """
     Relay B	Pico	Description
     VCC	    VSYS	Power input

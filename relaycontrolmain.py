@@ -2,6 +2,7 @@ import logging
 import serial
 
 from waveshare_defs import WaveshareDef
+import time
 
 
 class WaveshareRelayController:
@@ -21,7 +22,7 @@ class WaveshareRelayController:
     BUZZER	GP6	    Control pin of buzzer
     """
 
-    def __init__(self, serial_device="/dev/ttyUSB0"):
+    def __init__(self, serial_device="/dev/ttyUSB0", default_states: dict[WaveshareDef, bool] = None):
 
         self.logger = logging.getLogger(__name__)
 
@@ -37,6 +38,27 @@ class WaveshareRelayController:
         )
 
         self.logger.info("Serial port status:{}".format(self.serial.is_open))
+
+        self.default_states = default_states
+
+    @staticmethod
+    def parse_default_states(default_states_str: str) -> dict[WaveshareDef, bool]:
+        """
+
+        """
+        ret = dict()
+
+        str_to_ks = default_states_str.split(",")
+        for config_pair in str_to_ks:
+            channel_int = int(config_pair.split(":")[0])
+            channel = WaveshareDef.from_channel_def(channel_int)
+            if channel is None:
+                continue
+            channel_bool_str = config_pair.split(":")[1]
+            channel_bool = True if channel_bool_str == "True" else False
+            ret[channel] = channel_bool
+
+        return ret
 
     def connect(self):
         """
@@ -75,3 +97,26 @@ class WaveshareRelayController:
         Set all relays to OFF
         """
         self.write_packet(99, 0, 0)
+        time.sleep(1)
+
+    def set_default_states(self, default_states: dict[WaveshareDef, bool] = None):
+        """
+        set the default relay states
+        optionally pass in default states, if default_states is None,
+        attempt to use self.relay_states (from config)
+        """
+        n_channels_switched = 0
+
+        if default_states is None:
+            # use self default states
+            default_states = self.default_states
+
+        if default_states is not None:
+            for channel, value in default_states.items():
+                n_channels_switched += 1
+                if value is True:
+                    self.set_channel_on(channel)
+                elif value is False:
+                    self.set_channel_off(channel)
+
+        return n_channels_switched
