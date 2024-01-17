@@ -63,4 +63,5 @@ See testcfg.cfg, there are only two config lines:
 Setting the serial port: ``serial_port=COM49``
 
 Setting the default relay states (set_default_states() is called): ``default_relay_states = 1:True,2:True,3:True,4:True,5:False,6:False,7:False,8:False``
+The relay states are comma-delimited pairs of channel:state pairs where the state is True (on) or False (off)
 
