@@ -49,3 +49,18 @@ if __name__ == "__main__":
 
 
 ```
+
+## GUI Control
+There's also a small GUI (pysimplegui based) to enable/disable each relay channel:
+
+![gui-screenshot.png](gui-screenshot.png)
+
+Run it with ``python3 simple_gui.py``
+
+## Config
+See testcfg.cfg, there are only two config lines:
+
+Setting the serial port: ``serial_port=COM49``
+
+Setting the default relay states (set_default_states() is called): ``default_relay_states = 1:True,2:True,3:True,4:True,5:False,6:False,7:False,8:False``
+
