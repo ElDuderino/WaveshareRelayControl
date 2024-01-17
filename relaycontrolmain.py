@@ -41,10 +41,28 @@ class WaveshareRelayController:
 
         self.default_states = default_states
 
+        """
+        We're keeping track of the states as best we can 
+        Eventually I'd like to add logic that syncs the control state over UART,
+        but for now, we have to track the state based on when we open/close the relay
+        """
+        self.current_states: dict[WaveshareDef, int] = dict()
+
+        for item in WaveshareDef:
+            self.current_states[item] = None
+
+    def get_channel_states(self) -> dict[WaveshareDef, int]:
+        """
+        Return the channel states
+        :return: a dict of states (1 is on 0 is off) indexed by waveshare channel def
+        """
+        return self.current_states
+
     @staticmethod
     def parse_default_states(default_states_str: str) -> dict[WaveshareDef, bool]:
         """
-
+        Parse the default states from the config file, they should be in a string format like:
+        1:True,2:True,3:True,4:True,5:False,6:False,7:False,8:False
         """
         ret = dict()
 
@@ -62,7 +80,7 @@ class WaveshareRelayController:
 
     def connect(self):
         """
-
+        Connect to the serial port
         :return:
         """
         if self.serial and self.serial.is_open is False:
@@ -70,7 +88,7 @@ class WaveshareRelayController:
 
     def disconnect(self):
         """
-
+        Disconnect from the serial port
         :return:
         """
         if self.serial and self.serial.is_open:
@@ -85,18 +103,24 @@ class WaveshareRelayController:
         return "{0},{1},{2}\n".format(cmd, target, value)
 
     def set_channel_on(self, channel: WaveshareDef):
+        self.current_states[channel] = 1
         target = int(channel.value)
         self.write_packet(0, target, 1)
 
     def set_channel_off(self, channel: WaveshareDef):
+        self.current_states[channel] = 0
         target = int(channel.value)
         self.write_packet(0, target, 0)
 
     def set_default_state(self):
         """
+        Note that this function is different from setting the default *states* (plural)
         Set all relays to OFF
+        This is a special method the firmware offers to set all the relays off
         """
         self.write_packet(99, 0, 0)
+        for channel in WaveshareDef:
+            self.current_states[channel] = 0
         time.sleep(1)
 
     def set_default_states(self, default_states: dict[WaveshareDef, bool] = None):

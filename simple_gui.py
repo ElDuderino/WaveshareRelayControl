@@ -26,6 +26,9 @@ class WaveshareGUI:
         print("Setting relay default states")
         self.relay_controller.set_default_states()
 
+        print("Current states:")
+        print(self.relay_controller.get_channel_states())
+
     def main(self):
         layout = [
             [sg.Checkbox('Channel 1', key='channel1', change_submits=True),
@@ -68,7 +71,7 @@ class WaveshareGUI:
 
             # Check which checkbox triggered the event and print its state
             for i in range(1, 9):
-                channel_key = f'channel{i}'
+                channel_key = f'channel{i}' # the key of the simplegui component
                 if event == channel_key:
                     print(f'{channel_key} is {"checked" if values[channel_key] else "unchecked"}')
                     channel_state = values[channel_key]
@@ -106,6 +109,9 @@ class WaveshareGUI:
 
         elif channel_id == 'channel8':
             self.set_channel_state(WaveshareDef.CH8, channel_state)
+
+        print("Channel states:")
+        print(self.relay_controller.get_channel_states())
 
 
 if __name__ == '__main__':

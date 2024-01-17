@@ -49,3 +49,24 @@ class WaveshareDef(IntEnum):
             return WaveshareDef.CH8
         else:
             return None
+
+    def get_channel_number(self) -> int:
+        """
+        Get the chanel number as an int
+        """
+        if self.name == 'CH1':
+            return 1
+        elif self.name == 'CH2':
+            return 2
+        elif self.name == 'CH3':
+            return 3
+        elif self.name == 'CH4':
+            return 4
+        elif self.name == 'CH5':
+            return 5
+        elif self.name == 'CH6':
+            return 6
+        elif self.name == 'CH7':
+            return 7
+        elif self.name == 'CH8':
+            return 8
